@@ -135,6 +135,40 @@ const pages = [
   }
 ];
 
+const creditContent = {
+  title: "CREDIT",
+  sections: [
+    {
+      role: "企画・制作",
+      names: ["Remi"]
+    },
+    {
+      role: "謎解き・シナリオ",
+      names: ["Remi", "with ChatGPT"]
+    },
+    {
+      role: "Webデザイン・開発",
+      names: ["Remi", "with Codex"]
+    },
+    {
+      role: "イラスト・ビジュアル制作",
+      names: ["Remi", "with ChatGPT"]
+    },
+    {
+      role: "音楽・効果音制作",
+      names: ["Remi", "with ChatGPT"]
+    },
+    {
+      role: "Special Thanks",
+      names: ["Kosuke"]
+    }
+  ],
+  andYou: "And You",
+  message: "この物語を完成させてくれた\nすべてのゲストに、心からの感謝を。",
+  signature: "Kosuke & Remi",
+  date: "2026.09.23"
+};
+
 const STORAGE_KEY = "lostInvitationProgress";
 const MIRACLE_STORAGE_KEY = "butterflyMiracleRecords";
 const LOTTERY_STORAGE_KEY = "butterflyLotteryEntry";
@@ -184,6 +218,12 @@ let pageCueTimer;
 let correctCueTimer;
 let miraclePollTimer;
 let miracleRecordsCache = loadLocalMiracleRecords();
+let creditAutoScrollFrame;
+let creditAutoScrollStartedAt;
+let creditAutoScrollPaused = false;
+let creditPreviousFocus = null;
+let creditScrollPosition = 0;
+let creditHistoryPushed = false;
 
 detectOptionalImages();
 
@@ -593,6 +633,7 @@ function renderExtraPage(page) {
         </div>
         ${renderEscapeGameCard()}
         ${renderExtraVideo()}
+        ${renderCreditEntryCard()}
         <div class="story-body extra-closing">
           ${formatStoryText("祝福の館は、\n\n今日という日だけ、\n\n静かにその扉を開きました。\n\n皆さまとともに紡いだこの物語は、\n\n私たちにとって一生忘れられない思い出です。\n\nまたどこかで、\n\n笑顔でお会いできる日を楽しみにしています。\n\n**本日は、本当にありがとうございました。**")}
         </div>
@@ -607,6 +648,20 @@ function renderExtraPage(page) {
         ${renderRoomVisual(themeClass)}
       </article>
     </div>
+  `;
+}
+
+function renderCreditEntryCard() {
+  return `
+    <button class="extra-card credit-entry-card" type="button" data-action="open-credit">
+      <span class="extra-card__ribbon">End Roll</span>
+      <span class="credit-entry-card__mark" aria-hidden="true">♪</span>
+      <span class="extra-card__body">
+        <span class="extra-card__title">CREDIT</span>
+        <span class="extra-card__text">祝福の館をかたちにした人たちと、<br>この物語を完成させてくれた皆さまへ。</span>
+        <span class="extra-card__button">クレジットを見る</span>
+      </span>
+    </button>
   `;
 }
 
@@ -731,6 +786,47 @@ function renderExtraVideo() {
         <source src="assets/videos/story_endding.mp4" type="video/mp4">
         お使いのブラウザでは動画を再生できません。
       </video>
+    </section>
+  `;
+}
+
+function renderCreditOverlay() {
+  return `
+    <div class="credit-overlay" id="credit-overlay" role="dialog" aria-modal="true" aria-labelledby="credit-title">
+      <div class="credit-panel" role="document">
+        <button class="credit-close-button" type="button" data-action="close-credit" aria-label="クレジットを閉じる">×</button>
+        <div class="credit-scroll" id="credit-scroll" tabindex="0">
+          <div class="credit-roll">
+            <p class="eyebrow">Blessing Manor</p>
+            <h2 id="credit-title">${escapeHtml(creditContent.title)}</h2>
+            <div class="credit-sections">
+              ${creditContent.sections.map(renderCreditSection).join("")}
+            </div>
+            <div class="credit-and-you">${escapeHtml(creditContent.andYou)}</div>
+            <div class="credit-message">${renderCreditMessage(creditContent.message)}</div>
+            <div class="credit-signature">
+              <strong>${escapeHtml(creditContent.signature)}</strong>
+              <span>${escapeHtml(creditContent.date)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCreditMessage(message) {
+  return String(message)
+    .split(/\n{2,}/)
+    .map((block) => `<p>${escapeHtml(block.trim()).replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function renderCreditSection(section) {
+  return `
+    <section class="credit-section">
+      <h3>${escapeHtml(section.role)}</h3>
+      ${section.names.map((name) => `<p>${escapeHtml(name)}</p>`).join("")}
     </section>
   `;
 }
@@ -891,6 +987,7 @@ function bindCommonActions() {
   const restartButton = book.querySelector("[data-action='restart']");
   const resetProgressButton = book.querySelector("[data-action='reset-progress']");
   const backButton = book.querySelector("[data-action='back-to-unlocked']");
+  const creditButton = book.querySelector("[data-action='open-credit']");
 
   if (openBookButton) {
     openBookButton.addEventListener("click", () => {
@@ -941,6 +1038,151 @@ function bindCommonActions() {
       setPage(state.unlockedPageIndex);
     });
   }
+
+  if (creditButton) {
+    creditButton.addEventListener("click", () => {
+      triggerButtonCue();
+      playSound("click");
+      openCreditOverlay(creditButton);
+    });
+  }
+}
+
+function openCreditOverlay(triggerElement) {
+  if (document.getElementById("credit-overlay")) {
+    return;
+  }
+
+  creditPreviousFocus = triggerElement || document.activeElement;
+  creditScrollPosition = window.scrollY || document.documentElement.scrollTop || 0;
+  creditHistoryPushed = false;
+  document.body.insertAdjacentHTML("beforeend", renderCreditOverlay());
+  document.body.classList.add("is-credit-open");
+  document.body.style.top = `-${creditScrollPosition}px`;
+
+  const overlay = document.getElementById("credit-overlay");
+  const closeButton = overlay.querySelector("[data-action='close-credit']");
+  const scrollArea = document.getElementById("credit-scroll");
+
+  closeButton.addEventListener("click", () => {
+    closeCreditOverlay({ restoreHistory: true });
+  });
+
+  overlay.addEventListener("keydown", handleCreditKeydown);
+  ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
+    scrollArea.addEventListener(eventName, pauseCreditAutoScroll, { passive: true });
+  });
+
+  closeButton.focus({ preventScroll: true });
+  startCreditAutoScroll();
+
+  if (window.location.hash !== "#credit") {
+    history.pushState({ creditOpen: true }, "", "#credit");
+    creditHistoryPushed = true;
+  }
+}
+
+function closeCreditOverlay({ restoreHistory = false } = {}) {
+  const overlay = document.getElementById("credit-overlay");
+
+  if (!overlay) {
+    return;
+  }
+
+  if (restoreHistory && creditHistoryPushed && window.location.hash === "#credit") {
+    history.back();
+    return;
+  }
+
+  stopCreditAutoScroll();
+  overlay.removeEventListener("keydown", handleCreditKeydown);
+  overlay.remove();
+  document.body.classList.remove("is-credit-open");
+  document.body.style.top = "";
+  window.scrollTo(0, creditScrollPosition);
+
+  if (creditPreviousFocus && typeof creditPreviousFocus.focus === "function") {
+    creditPreviousFocus.focus({ preventScroll: true });
+  }
+
+  creditPreviousFocus = null;
+  creditHistoryPushed = false;
+}
+
+function handleCreditKeydown(event) {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeCreditOverlay({ restoreHistory: true });
+    return;
+  }
+
+  if (event.key !== "Tab") {
+    return;
+  }
+
+  const overlay = document.getElementById("credit-overlay");
+  const focusableElements = Array.from(overlay.querySelectorAll("button, [tabindex='0']"));
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault();
+    lastElement.focus();
+  }
+
+  if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault();
+    firstElement.focus();
+  }
+}
+
+function startCreditAutoScroll() {
+  stopCreditAutoScroll();
+  creditAutoScrollPaused = prefersReducedMotion();
+
+  if (creditAutoScrollPaused) {
+    return;
+  }
+
+  const scrollArea = document.getElementById("credit-scroll");
+
+  if (!scrollArea) {
+    return;
+  }
+
+  creditAutoScrollStartedAt = 0;
+
+  function step(timestamp) {
+    if (creditAutoScrollPaused || !document.getElementById("credit-overlay")) {
+      return;
+    }
+
+    if (!creditAutoScrollStartedAt) {
+      creditAutoScrollStartedAt = timestamp + 900;
+    }
+
+    const maxScroll = Math.max(0, scrollArea.scrollHeight - scrollArea.clientHeight);
+    const duration = Math.min(28000, Math.max(18000, maxScroll * 30));
+    const progress = Math.max(0, Math.min(1, (timestamp - creditAutoScrollStartedAt) / duration));
+
+    scrollArea.scrollTop = maxScroll * progress;
+
+    if (progress < 1) {
+      creditAutoScrollFrame = requestAnimationFrame(step);
+    }
+  }
+
+  creditAutoScrollFrame = requestAnimationFrame(step);
+}
+
+function pauseCreditAutoScroll() {
+  creditAutoScrollPaused = true;
+  stopCreditAutoScroll();
+}
+
+function stopCreditAutoScroll() {
+  window.cancelAnimationFrame(creditAutoScrollFrame);
+  creditAutoScrollFrame = null;
 }
 
 function bindPuzzleForm(page) {
@@ -1933,3 +2175,8 @@ renderPage();
 setAudioEnabled(Boolean(state.audioEnabled), { persist: false, resumeAudio: false });
 window.addEventListener("resize", schedulePageOverflowUpdate);
 window.addEventListener("orientationchange", schedulePageOverflowUpdate);
+window.addEventListener("popstate", () => {
+  if (document.getElementById("credit-overlay") && window.location.hash !== "#credit") {
+    closeCreditOverlay({ restoreHistory: false });
+  }
+});
