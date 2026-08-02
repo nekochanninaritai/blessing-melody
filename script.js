@@ -160,7 +160,7 @@ const creditContent = {
     },
     {
       role: "Special Thanks",
-      names: ["Kosuke"]
+      names: ["Maison symphonique", "Kosuke"]
     }
   ],
   andYou: "And You",
