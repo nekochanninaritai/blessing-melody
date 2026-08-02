@@ -160,7 +160,7 @@ const creditContent = {
     },
     {
       role: "Special Thanks",
-      names: ["Maison symphonique", "Kosuke"]
+      names: ["Maison symphonique"]
     }
   ],
   andYou: "And You",
@@ -649,7 +649,7 @@ function renderExtraPage(page) {
         ${renderExtraVideo()}
         ${renderCreditEntryCard()}
         <div class="story-body extra-closing">
-          ${formatStoryText("祝福の館は、\n\n今日という日だけ、\n\n静かにその扉を開きました。\n\n皆さまとともに紡いだこの物語は、\n\n私たちにとって一生忘れられない思い出です。\n\nまたどこかで、\n\n笑顔でお会いできる日を楽しみにしています。\n\n**本日は、本当にありがとうございました。**")}
+          ${formatStoryText("祝福の館は、\n\n今日という日だけ、\n\n静かにその扉を開きました。\n\n皆さまとともに紡いだこの物語は、\n\n私たちにとって一生忘れられない思い出です。\n\nまた笑顔でお会いできる日を楽しみにしています。\n\n**本日は、本当にありがとうございました。**")}
         </div>
         <div class="page-actions">
           ${previousButton}
@@ -794,8 +794,8 @@ function renderExtraVideo() {
     <section class="extra-video-section" aria-labelledby="extra-video-title">
       <p class="eyebrow">Behind The Story</p>
       <h3 id="extra-video-title">NGシーン</h3>
-      <p class="extra-video-subtitle">実はこんな舞台裏もありました。</p>
-      <p class="extra-video-text">少しだけ肩の力を抜いて、<br>最後まで楽しんでいただけたら嬉しいです。</p>
+      <p class="extra-video-subtitle">本編では見られなかった、もうひとつのエンディング。</p>
+      <p class="extra-video-text">動画化に挑戦したものの、蝶たちが少し個性的に舞いすぎて、<br>お蔵入りとなりました。どうぞ温かい目でご覧ください。</p>
       <video class="extra-video" controls preload="metadata" playsinline poster="assets/images/story-ending.png">
         <source src="assets/videos/story_endding.mp4" type="video/mp4">
         お使いのブラウザでは動画を再生できません。
