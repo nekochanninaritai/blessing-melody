@@ -1346,12 +1346,8 @@ async function addLotteryEntry() {
   }
 
   const client = getMiracleClient();
-  const entries = client.enabled
-    ? []
-    : await fetchLotteryEntries({ silent: true });
-  const lotteryNumber = client.enabled
-    ? await allocateRemoteLotteryNumber(client)
-    : entries.length + 1;
+  const entries = await fetchLotteryEntries({ silent: true });
+  const lotteryNumber = getNextLotteryNumber(entries);
   const record = {
     id: createMiracleId(),
     nickname: getPreferredLotteryNickname(),
@@ -1366,23 +1362,7 @@ async function addLotteryEntry() {
     return record;
   }
 
-  const response = await fetch(getLotteryEndpoint(client), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(record)
-  });
-
-  if (!response.ok) {
-    throw new Error("Could not save lottery entry.");
-  }
-
-  const result = await response.json();
-  const savedEntry = {
-    ...record,
-    firebaseKey: result.name || ""
-  };
+  const savedEntry = await reserveRemoteLotteryEntry(client, record, entries);
   saveLotteryEntry(savedEntry);
 
   return savedEntry;
@@ -1474,68 +1454,120 @@ function getLotteryEndpoint(client) {
 }
 
 // Lottery Entry
-function getLotteryCounterEndpoint(client) {
-  return `${client.databaseURL}/lotteryCounter.json`;
-}
+async function reserveRemoteLotteryEntry(client, baseRecord, entries) {
+  const usedNumbers = new Set(
+    entries
+      .map((entry) => Number(entry?.lotteryNumber))
+      .filter((number) => Number.isFinite(number) && number > 0)
+  );
+  const initialNumber = Math.max(baseRecord.lotteryNumber, ...usedNumbers, 0);
 
-// Lottery Entry
-async function allocateRemoteLotteryNumber(client) {
-  const endpoint = getLotteryCounterEndpoint(client);
-  const maxRetries = 8;
+  for (let offset = 0; offset < 100; offset += 1) {
+    const lotteryNumber = initialNumber + offset;
 
-  for (let attempt = 0; attempt < maxRetries; attempt += 1) {
-    const currentResponse = await fetch(endpoint, {
-      cache: "no-store",
-      headers: {
-        "X-Firebase-ETag": "true"
-      }
-    });
-
-    if (!currentResponse.ok) {
-      throw new Error("Could not fetch lottery counter.");
+    if (usedNumbers.has(lotteryNumber)) {
+      continue;
     }
 
-    const etag = currentResponse.headers.get("etag");
+    const firebaseKey = `number-${lotteryNumber}`;
+    const record = {
+      ...baseRecord,
+      lotteryNumber
+    };
+    const reservedEntry = await tryReserveLotteryEntryNumber(client, firebaseKey, record);
 
-    if (!etag) {
-      throw new Error("Could not read lottery counter token.");
+    if (reservedEntry === "unavailable") {
+      break;
     }
 
-    const currentValue = await currentResponse.json();
-    const currentNumber = Number(currentValue);
-    const nextNumber = Number.isFinite(currentNumber) && currentNumber > 0
-      ? currentNumber + 1
-      : (await getInitialLotteryCounterValue()) + 1;
-    const updateResponse = await fetch(endpoint, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "if-match": etag
-      },
-      body: JSON.stringify(nextNumber)
-    });
-
-    if (updateResponse.ok) {
-      return nextNumber;
+    if (reservedEntry) {
+      return reservedEntry;
     }
 
-    if (updateResponse.status !== 412) {
-      throw new Error("Could not update lottery counter.");
-    }
+    usedNumbers.add(lotteryNumber);
   }
 
-  throw new Error("Could not allocate lottery number.");
+  return postRemoteLotteryEntry(client, {
+    ...baseRecord,
+    lotteryNumber: getNextLotteryNumber(entries)
+  });
 }
 
 // Lottery Entry
-async function getInitialLotteryCounterValue() {
-  const entries = await fetchLotteryEntries({ silent: true });
+async function postRemoteLotteryEntry(client, record) {
+  const response = await fetch(getLotteryEndpoint(client), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(record)
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not save lottery entry.");
+  }
+
+  const result = await response.json();
+
+  return {
+    ...record,
+    firebaseKey: result.name || ""
+  };
+}
+
+// Lottery Entry
+function getNextLotteryNumber(entries) {
   const maxLotteryNumber = entries.reduce(
     (max, entry) => Math.max(max, Number(entry?.lotteryNumber) || 0),
     0
   );
 
-  return Math.max(maxLotteryNumber, entries.length);
+  return Math.max(maxLotteryNumber, entries.length) + 1;
+}
+
+// Lottery Entry
+async function tryReserveLotteryEntryNumber(client, firebaseKey, record) {
+  const endpoint = `${client.databaseURL}/lotteryEntries/${firebaseKey}.json`;
+  const currentResponse = await fetch(endpoint, {
+    cache: "no-store",
+    headers: {
+      "X-Firebase-ETag": "true"
+    }
+  });
+
+  if (!currentResponse.ok) {
+    return "unavailable";
+  }
+
+  const currentValue = await currentResponse.json();
+
+  if (currentValue) {
+    return null;
+  }
+
+  const etag = currentResponse.headers.get("etag");
+
+  if (!etag) {
+    return "unavailable";
+  }
+
+  const updateResponse = await fetch(endpoint, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "if-match": etag
+    },
+    body: JSON.stringify(record)
+  });
+
+  if (!updateResponse.ok) {
+    return null;
+  }
+
+  return {
+    ...record,
+    firebaseKey
+  };
 }
 
 // Lottery Entry

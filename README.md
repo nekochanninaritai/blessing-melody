@@ -52,10 +52,6 @@ window.WEDDING_FIREBASE_CONFIG = {
         ".write": true,
         ".validate": "newData.hasChildren(['id', 'completedAt', 'lotteryEntry', 'lotteryNumber']) && newData.child('lotteryEntry').val() === true && newData.child('lotteryNumber').isNumber()"
       }
-    },
-    "lotteryCounter": {
-      ".read": true,
-      ".write": "newData.isNumber() && ((!data.exists() && newData.val() > 0) || (data.exists() && newData.val() == data.val() + 1)) && newData.val() <= 500"
     }
   }
 }
