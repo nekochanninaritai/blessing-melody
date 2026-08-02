@@ -27,7 +27,7 @@ const pages = [
     story: "扉の先は、小さな応接間でした。\n\n古い招待状、封蝋の手紙、色あせた楽譜。どれも今日の来訪者を待っていたようです。\n\n机の上には、欠けた招待状の一部。\n白い蝶が止まると、紙面に光が灯ります。\n\nここから始まるのは、二人へ贈る一曲を完成させる旅。\n\n余白に、最初の謎が浮かびました。",
     puzzleTitle: "謎解き①",
     question: "蝶は迷路の中を飛びながら、いくつかの文字を通り過ぎました。\n\nSからGまでたどり、通り道にある文字を順番どおりにつなげてください。",
-    questionImage: "assets/question1.png",
+    questionImage: "assets/images/question1.png",
     questionImageAlt: "蝶が通る迷路の問題画像",
     answer: "ブーケ",
     explanation: "答えを告げると、白い蝶が羽を広げました。\n\n紙片が招待状にはまり、金色の線が走ります。\n\nオルゴールの奥で、澄んだ一音が鳴りました。\n\n蝶は次の廊下へ飛んでいきます。",
@@ -1345,8 +1345,13 @@ async function addLotteryEntry() {
     return existingEntry;
   }
 
-  const entries = await fetchLotteryEntries({ silent: true });
-  const lotteryNumber = entries.length + 1;
+  const client = getMiracleClient();
+  const entries = client.enabled
+    ? []
+    : await fetchLotteryEntries({ silent: true });
+  const lotteryNumber = client.enabled
+    ? await allocateRemoteLotteryNumber(client)
+    : entries.length + 1;
   const record = {
     id: createMiracleId(),
     nickname: getPreferredLotteryNickname(),
@@ -1354,7 +1359,6 @@ async function addLotteryEntry() {
     lotteryEntry: true,
     lotteryNumber
   };
-  const client = getMiracleClient();
 
   if (!client.enabled) {
     saveLocalLotteryEntries([...entries, record]);
@@ -1467,6 +1471,71 @@ async function fetchLotteryEntries({ silent = false } = {}) {
 // Lottery Entry
 function getLotteryEndpoint(client) {
   return `${client.databaseURL}/lotteryEntries.json`;
+}
+
+// Lottery Entry
+function getLotteryCounterEndpoint(client) {
+  return `${client.databaseURL}/lotteryCounter.json`;
+}
+
+// Lottery Entry
+async function allocateRemoteLotteryNumber(client) {
+  const endpoint = getLotteryCounterEndpoint(client);
+  const maxRetries = 8;
+
+  for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+    const currentResponse = await fetch(endpoint, {
+      cache: "no-store",
+      headers: {
+        "X-Firebase-ETag": "true"
+      }
+    });
+
+    if (!currentResponse.ok) {
+      throw new Error("Could not fetch lottery counter.");
+    }
+
+    const etag = currentResponse.headers.get("etag");
+
+    if (!etag) {
+      throw new Error("Could not read lottery counter token.");
+    }
+
+    const currentValue = await currentResponse.json();
+    const currentNumber = Number(currentValue);
+    const nextNumber = Number.isFinite(currentNumber) && currentNumber > 0
+      ? currentNumber + 1
+      : (await getInitialLotteryCounterValue()) + 1;
+    const updateResponse = await fetch(endpoint, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "if-match": etag
+      },
+      body: JSON.stringify(nextNumber)
+    });
+
+    if (updateResponse.ok) {
+      return nextNumber;
+    }
+
+    if (updateResponse.status !== 412) {
+      throw new Error("Could not update lottery counter.");
+    }
+  }
+
+  throw new Error("Could not allocate lottery number.");
+}
+
+// Lottery Entry
+async function getInitialLotteryCounterValue() {
+  const entries = await fetchLotteryEntries({ silent: true });
+  const maxLotteryNumber = entries.reduce(
+    (max, entry) => Math.max(max, Number(entry?.lotteryNumber) || 0),
+    0
+  );
+
+  return Math.max(maxLotteryNumber, entries.length);
 }
 
 // Lottery Entry
