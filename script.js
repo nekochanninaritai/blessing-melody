@@ -36,39 +36,39 @@ const pages = [
   },
   {
     type: "story",
-    title: "Cantabile ― 歌うように ―",
-    text: "廊下には、いくつもの時計が並んでいました。\n\n振り子時計、置き時計、懐中時計。どれも針を止めたまま、静かに時を抱えています。\n\n壁には、長い五線譜。\n二人のこれからを見守るように続いていました。\n\n白い蝶は時計の間を抜け、ひとつの扉の前で止まります。\n\n鍵穴の横に、二つ目の謎が刻まれていました。"
+    title: "Crescendo ― だんだん強く ―",
+    text: "光の先には、小さな温室がありました。\n\n陽だまりの中で花々が咲き、中心では金色の蝶が羽を休めています。\n\n白い蝶が近づくと、金色の蝶はゆっくり羽を開きました。\n\n譜面台には、途中までの楽譜。\nその余白に、二つ目の謎が浮かびます。\n\n拍手、笑顔、見守るまなざし。\nあなたの答えも、小さな光になります。"
   },
   {
     type: "puzzle",
     id: 2,
-    leftTitle: "第二章 Cantabile ― 歌うように ―",
-    story: "扉には小さな鍵穴。\n\nその横に、二つ目の謎が刻まれていました。\n\n過ぎてきた時間も、これから歩む時間も。\nすべてが、今日の一音につながっています。\n\n扉の向こうで、時計の針が動き出すのを待っています。",
+    leftTitle: "第二章 Crescendo ― だんだん強く ―",
+    story: "温室の譜面台には、途中までしか書かれていない楽譜。\n\nその余白に、二つ目の謎が浮かびました。\n\n大きな言葉でなくてもかまいません。\n拍手、笑顔、見守るまなざし。\n\nあなたの答えも、二人の未来を照らす小さな光になります。",
     puzzleTitle: "謎解き②",
     question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
-    questionImage: "assets/question2.png",
+    questionImage: "assets/images/question3.png",
     questionImageAlt: "第二章の謎解き画像",
-    answer: "ドレス",
-    explanation: "答えが届くと、時計が静かに音を立てました。\n\nこちり、と針が進みます。\n\n止まっていた時が、少しずつ動き出しました。\n\n廊下の奥から、温かな光が差し込みます。",
+    answer: "３",
+    explanation: "二つ目の答えが重なると、温室に光が広がりました。\n\n花が開き、蝶たちが舞い上がります。\n\nオルゴールは、短いフレーズを奏で始めました。\n\n次の空白が待っています。",
     restoredPiece: 2,
     restoredText: "第二の旋律"
   },
   {
     type: "story",
-    title: "Crescendo ― だんだん強く ―",
-    text: "光の先には、小さな温室がありました。\n\n陽だまりの中で花々が咲き、中心では金色の蝶が羽を休めています。\n\n白い蝶が近づくと、金色の蝶はゆっくり羽を開きました。\n\n譜面台には、途中までの楽譜。\nその余白に、三つ目の謎が浮かびます。\n\n拍手、笑顔、見守るまなざし。\nあなたの答えも、小さな光になります。"
+    title: "Cantabile ― 歌うように ―",
+    text: "廊下には、いくつもの時計が並んでいました。\n\n振り子時計、置き時計、懐中時計。どれも針を止めたまま、静かに時を抱えています。\n\n壁には、長い五線譜。\n二人のこれからを見守るように続いていました。\n\n白い蝶は時計の間を抜け、ひとつの扉の前で止まります。\n\n鍵穴の横に、三つ目の謎が刻まれていました。"
   },
   {
     type: "puzzle",
     id: 3,
-    leftTitle: "第三章 Crescendo ― だんだん強く ―",
-    story: "温室の譜面台には、途中までしか書かれていない楽譜。\n\nその余白に、三つ目の謎が浮かびました。\n\n大きな言葉でなくてもかまいません。\n拍手、笑顔、見守るまなざし。\n\nあなたの答えも、二人の未来を照らす小さな光になります。",
+    leftTitle: "第三章 Cantabile ― 歌うように ―",
+    story: "扉には小さな鍵穴。\n\nその横に、三つ目の謎が刻まれていました。\n\n過ぎてきた時間も、これから歩む時間も。\nすべてが、今日の一音につながっています。\n\n扉の向こうで、時計の針が動き出すのを待っています。",
     puzzleTitle: "謎解き③",
-      question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
-    questionImage: "assets/images/question3.png",
+    question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
+    questionImage: "assets/question2.png",
     questionImageAlt: "第三章の謎解き画像",
-    answer: "３",
-    explanation: "三つ目の答えが重なると、温室に光が広がりました。\n\n花が開き、蝶たちが舞い上がります。\n\nオルゴールは、短いフレーズを奏で始めました。\n\nあと一つ。\n最後の空白が待っています。",
+    answer: "ドレス",
+    explanation: "三つ目の答えが届くと、時計が静かに音を立てました。\n\nこちり、と針が進みます。\n\n止まっていた時が、少しずつ動き出しました。\n\n廊下の奥から、温かな光が差し込みます。",
     restoredPiece: 3,
     restoredText: "第三の旋律"
   },
@@ -909,12 +909,12 @@ function getPageTheme(page) {
     return "theme-invitation";
   }
 
-  if (page.id === 2 || page.sourceId === 2 || page.title?.includes("Cantabile") || page.leftTitle?.includes("Cantabile")) {
-    return "theme-time";
+  if (page.id === 2 || page.sourceId === 2 || page.title?.includes("Crescendo") || page.leftTitle?.includes("Crescendo")) {
+    return "theme-garden";
   }
 
-  if (page.id === 3 || page.sourceId === 3 || page.title?.includes("Crescendo") || page.leftTitle?.includes("Crescendo")) {
-    return "theme-garden";
+  if (page.id === 3 || page.sourceId === 3 || page.title?.includes("Cantabile") || page.leftTitle?.includes("Cantabile")) {
+    return "theme-time";
   }
 
   if (page.id === 4 || page.sourceId === 4 || page.title?.includes("Encore") || page.leftTitle?.includes("Encore") || page.type === "ending") {
