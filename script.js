@@ -665,7 +665,7 @@ function renderLotteryEntrySection() {
       <button class="primary-button lottery-entry__button" type="button" data-action="lottery-entry" ${entered ? "disabled" : ""}>
         ${entered ? "抽選受付済み" : "🎁 抽選へ参加する"}
       </button>
-      <p class="lottery-entry__message" id="lottery-message" aria-live="polite">${message}</p>
+      <div class="lottery-entry__message" id="lottery-message" aria-live="polite">${message}</div>
       <button class="secondary-button lottery-entry__continue" type="button" data-action="continue-signature" ${entered ? "" : "hidden"}>続けて署名する</button>
     </section>
   `;
@@ -673,10 +673,20 @@ function renderLotteryEntrySection() {
 
 function renderLotteryCompleteMessage(entry) {
   const lotteryNumber = entry?.lotteryNumber
-    ? `\nあなたの抽選番号は「No.${escapeHtml(String(entry.lotteryNumber))}」です。`
+    ? `
+      <span class="lottery-number-card">
+        <span class="lottery-number-card__label">あなたの抽選番号</span>
+        <strong class="lottery-number-card__number">No.${escapeHtml(String(entry.lotteryNumber))}</strong>
+      </span>
+    `
     : "";
 
-  return `抽選受付が完了しました。${lotteryNumber}\n\n披露宴内で抽選を行います。\n\nどうぞお楽しみに。`;
+  return `
+    <span class="lottery-entry__message-line">抽選受付が完了しました。</span>
+    ${lotteryNumber}
+    <span class="lottery-entry__message-line">披露宴内で抽選を行います。</span>
+    <span class="lottery-entry__message-line">どうぞお楽しみに。</span>
+  `;
 }
 
 function renderMiracleRecords() {
@@ -1134,7 +1144,7 @@ function updateLotteryEntryView(entry) {
   }
 
   if (message) {
-    message.textContent = renderLotteryCompleteMessage(entry);
+    message.innerHTML = renderLotteryCompleteMessage(entry);
   }
 
   updateLotteryEntryCount(Math.max(Number(entry?.lotteryNumber) || 0, loadLocalLotteryEntries().length));

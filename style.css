@@ -1589,6 +1589,9 @@ h3 {
 }
 
 .lottery-entry__message {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
   min-height: 1.6em;
   margin: 14px 0 0;
   color: var(--accent-dark);
@@ -1596,6 +1599,62 @@ h3 {
   line-height: 1.8;
   text-align: center;
   white-space: pre-line;
+}
+
+.lottery-entry__message-line {
+  display: block;
+}
+
+.lottery-number-card {
+  position: relative;
+  display: grid;
+  width: min(100%, 320px);
+  margin: 4px auto 2px;
+  padding: 14px 18px 16px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 154, 99, 0.68);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(235, 207, 135, 0.48)),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.72), transparent 5rem);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.42) inset,
+    0 10px 24px rgba(111, 60, 52, 0.14),
+    0 0 18px rgba(228, 199, 114, 0.2);
+}
+
+.lottery-number-card::before,
+.lottery-number-card::after {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 250, 238, 0.9);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.lottery-number-card::before {
+  left: -9px;
+}
+
+.lottery-number-card::after {
+  right: -9px;
+}
+
+.lottery-number-card__label {
+  color: rgba(111, 60, 52, 0.74);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+.lottery-number-card__number {
+  color: var(--ink);
+  font-family: "Noto Serif JP", "Yu Mincho", serif;
+  font-size: clamp(2rem, 12vw, 3rem);
+  line-height: 1.08;
+  text-shadow: 0 2px 0 rgba(255, 250, 238, 0.72);
 }
 
 .lottery-entry__continue {
