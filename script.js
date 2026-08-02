@@ -172,7 +172,7 @@ const creditContent = {
 const STORAGE_KEY = "lostInvitationProgress";
 const MIRACLE_STORAGE_KEY = "butterflyMiracleRecords";
 const LOTTERY_STORAGE_KEY = "butterflyLotteryEntry";
-const MIRACLE_POLL_INTERVAL_MS = 5000;
+const MIRACLE_POLL_INTERVAL_MS = 15000;
 const MIRACLE_MAX_RECORDS = 200;
 
 const runtimePages = buildRuntimePages(pages);
@@ -218,6 +218,7 @@ let pageCueTimer;
 let correctCueTimer;
 let miraclePollTimer;
 let miracleRecordsCache = loadLocalMiracleRecords();
+let miracleRecordsSignature = createMiracleRecordsSignature(miracleRecordsCache);
 let creditAutoScrollFrame;
 let creditAutoScrollStartedAt;
 let creditAutoScrollPaused = false;
@@ -1279,7 +1280,7 @@ function bindMiracleForm(page) {
       input.value = "";
       errorMessage.textContent = "";
       successMessage.textContent = "ご署名ありがとうございます。\nあなたの羽ばたきも、祝福の旋律の一部になりました。";
-      await refreshMiracleRecords();
+      await refreshMiracleRecords({ forceRender: true });
     } catch {
       successMessage.textContent = "";
       errorMessage.textContent = "記録の保存に失敗しました。少し時間をおいてもう一度お試しください。";
@@ -1774,9 +1775,17 @@ async function addMiracleRecord(nickname) {
   }
 }
 
-async function refreshMiracleRecords({ silent = false } = {}) {
+async function refreshMiracleRecords({ silent = false, forceRender = false } = {}) {
   try {
-    miracleRecordsCache = await fetchMiracleRecords();
+    const nextRecords = await fetchMiracleRecords();
+    const nextSignature = createMiracleRecordsSignature(nextRecords);
+
+    if (!forceRender && nextSignature === miracleRecordsSignature) {
+      return;
+    }
+
+    miracleRecordsCache = nextRecords;
+    miracleRecordsSignature = nextSignature;
     updateMiracleRecordsView();
   } catch {
     if (!silent) {
@@ -1800,8 +1809,19 @@ function updateMiracleRecordsView() {
   schedulePageOverflowUpdate();
 }
 
+function createMiracleRecordsSignature(records) {
+  return records
+    .map((record) => `${record.id}:${record.nickname}:${record.createdAt}`)
+    .join("|");
+}
+
 function startMiraclePolling() {
   stopMiraclePolling();
+
+  if (document.hidden) {
+    return;
+  }
+
   miraclePollTimer = window.setInterval(() => {
     refreshMiracleRecords({ silent: true });
   }, MIRACLE_POLL_INTERVAL_MS);
@@ -2042,12 +2062,34 @@ function setupAudioControls() {
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       pauseAllAudio({ showResumeButton: true });
+      stopMiraclePolling();
+      return;
+    }
+
+    if (runtimePages[state.currentPageIndex]?.type === "miracle") {
+      refreshMiracleRecords({ silent: true });
+      startMiraclePolling();
     }
   });
 
-  window.addEventListener("pagehide", () => pauseAllAudio({ showResumeButton: true }));
-  window.addEventListener("beforeunload", () => pauseAllAudio({ showResumeButton: true }));
-  window.addEventListener("blur", () => pauseAllAudio({ showResumeButton: true }));
+  window.addEventListener("pagehide", () => {
+    pauseAllAudio({ showResumeButton: true });
+    stopMiraclePolling();
+  });
+  window.addEventListener("beforeunload", () => {
+    pauseAllAudio({ showResumeButton: true });
+    stopMiraclePolling();
+  });
+  window.addEventListener("blur", () => {
+    pauseAllAudio({ showResumeButton: true });
+    stopMiraclePolling();
+  });
+  window.addEventListener("focus", () => {
+    if (!document.hidden && runtimePages[state.currentPageIndex]?.type === "miracle") {
+      refreshMiracleRecords({ silent: true });
+      startMiraclePolling();
+    }
+  });
 }
 
 function setAudioEnabled(enabled, options = {}) {
