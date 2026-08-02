@@ -6,7 +6,7 @@
 
 ## 公開ページ
 
-https://nekochanninaritai.github.io/lost-invitation-wedding/
+https://nekochanninaritai.github.io/blessing-melody/
 
 ## 内容
 
