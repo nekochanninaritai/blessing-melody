@@ -10,7 +10,7 @@ const pages = [
     text: "深い森の奥。\n\n小道を進むと、古い洋館が姿を現しました。\n\nその館の名は――\n祝福の館。\n\n今日だけ、ゲストを迎え入れる不思議な館です。\n\n扉の前で、白い蝶がふわりと舞いました。\n\n中へ入ると、広間の中央に大きなオルゴールがあります。けれど、その箱はまだ静かなまま。\n\nそばの手紙には、こう記されていました。",
     chunkImages: {
       1: {
-        image: "assets/images/letter.png?v=20260629-letter",
+        image: "assets/images/letter.jpg?v=20260802-optimized",
         imageAlt: "祝福の館からの手紙"
       }
     }
@@ -27,7 +27,7 @@ const pages = [
     story: "扉の先は、小さな応接間でした。\n\n古い招待状、封蝋の手紙、色あせた楽譜。どれも今日の来訪者を待っていたようです。\n\n机の上には、欠けた招待状の一部。\n白い蝶が止まると、紙面に光が灯ります。\n\nここから始まるのは、二人へ贈る一曲を完成させる旅。\n\n余白に、最初の謎が浮かびました。",
     puzzleTitle: "謎解き①",
     question: "蝶は迷路の中を飛びながら、いくつかの文字を通り過ぎました。\n\nSからGまでたどり、通り道にある文字を順番どおりにつなげてください。",
-    questionImage: "assets/images/question1.png",
+    questionImage: "assets/images/question1.jpg",
     questionImageAlt: "蝶が通る迷路の問題画像",
     answer: "ブーケ",
     explanation: "答えを告げると、白い蝶が羽を広げました。\n\n紙片が招待状にはまり、金色の線が走ります。\n\nオルゴールの奥で、澄んだ一音が鳴りました。\n\n蝶は次の廊下へ飛んでいきます。",
@@ -46,7 +46,7 @@ const pages = [
     story: "扉には小さな鍵穴。\n\nその横に、二つ目の謎が刻まれていました。\n\n過ぎてきた時間も、これから歩む時間も。\nすべてが、今日の一音につながっています。\n\n扉の向こうで、時計の針が動き出すのを待っています。",
     puzzleTitle: "謎解き②",
     question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
-    questionImage: "assets/images/question2.png",
+    questionImage: "assets/images/question2.jpg",
     questionImageAlt: "第二章の謎解き画像",
     answer: "チカイ",
     explanation: "二つ目の答えが届くと、時計が静かに音を立てました。\n\nこちり、と針が進みます。\n\n止まっていた時が、少しずつ動き出しました。\n\n廊下の奥から、温かな光が差し込みます。",
@@ -65,7 +65,7 @@ const pages = [
     story: "温室の譜面台には、途中までしか書かれていない楽譜。\n\nその余白に、三つ目の謎が浮かびました。\n\n大きな言葉でなくてもかまいません。\n拍手、笑顔、見守るまなざし。\n\nあなたの答えも、二人の未来を照らす小さな光になります。",
     puzzleTitle: "謎解き③",
     question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
-    questionImage: "assets/images/question3.png",
+    questionImage: "assets/images/question3.jpg",
     questionImageAlt: "第三章の謎解き画像",
     answer: "ドレス",
     explanation: "三つ目の答えが重なると、温室に光が広がりました。\n\n花が開き、蝶たちが舞い上がります。\n\nオルゴールは、短いフレーズを奏で始めました。\n\n次の空白が待っています。",
@@ -84,7 +84,7 @@ const pages = [
     story: "白い蝶が、最後の謎のそばへ降り立ちました。\n\n金色の蝶たちが、広間をゆっくり巡ります。\n\nさあ、最後の音を届けましょう。\n\n二人の新しい物語が、扉の向こうで待っています。",
     puzzleTitle: "謎解き④",
     question: "画像の中に隠された最後の手がかりを読み解き、導かれる言葉を答えてください。",
-    questionImage: "assets/images/question4.png",
+    questionImage: "assets/images/question4.jpg",
     questionImageAlt: "第四章の謎解き画像",
     answer: "シュクフク",
     explanation: "最後の答えが届いた瞬間。\n\nオルゴールのふたが、ゆっくりと開きました。\n\n四つの音が重なり、広間いっぱいに響きます。\n\n今日だけの祝福の音楽が完成しました。\n\n扉の向こうから、拍手のような光が差し込みます。",
@@ -114,7 +114,7 @@ const pages = [
     type: "story",
     title: "Epilogue 3 ― これからの二人へ祝福を ―",
     text: "オルゴールの音色は、\nもう館だけに響くものではありません。\n\n皆さまの祝福とともに、\nこれから始まる私たちの人生へ、\nいつまでも優しく寄り添い続けます。\n\n**本日は、本当にありがとうございました。**",
-    image: "assets/images/story-ending.png",
+    image: "assets/images/story-ending.jpg",
     imageAlt: "祝福の光に包まれたオルゴール",
     imageFirst: true,
     buttonText: "祝福の署名へ",
@@ -512,7 +512,7 @@ function renderExtraContentsButton() {
 
 function renderStoryImage(page) {
   const imageClass = [
-    page.image?.includes("letter.png") ? "is-letter-image" : "",
+    page.image?.includes("letter.") ? "is-letter-image" : "",
     page.variant === "epilogue" ? "is-epilogue-image" : ""
   ].filter(Boolean).join(" ");
 
@@ -526,7 +526,7 @@ function renderStoryImage(page) {
 function renderEndingLetterFrame() {
   return `
     <figure class="ending-letter-frame">
-      <img src="assets/images/ending_letter.png" alt="新郎新婦から皆さまへのメッセージ" onerror="this.closest('figure').classList.add('is-missing-image'); this.remove();">
+      <img src="assets/images/ending_letter.jpg" alt="新郎新婦から皆さまへのメッセージ" onerror="this.closest('figure').classList.add('is-missing-image'); this.remove();">
     </figure>
   `;
 }
@@ -796,7 +796,7 @@ function renderExtraVideo() {
       <h3 id="extra-video-title">NGシーン</h3>
       <p class="extra-video-subtitle">本編では見られなかった、もうひとつのエンディング。</p>
       <p class="extra-video-text">動画化に挑戦したものの、<br>蝶たちが少し個性的に舞いすぎて、<br>お蔵入りとなりました。<br>どうぞ温かい目でご覧ください。</p>
-      <video class="extra-video" controls preload="metadata" playsinline poster="assets/images/story-ending.png">
+      <video class="extra-video" controls preload="metadata" playsinline poster="assets/images/story-ending.jpg">
         <source src="assets/videos/story_endding.mp4" type="video/mp4">
         お使いのブラウザでは動画を再生できません。
       </video>

@@ -38,7 +38,7 @@ body {
   color: var(--ink);
   font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
   background:
-    url("assets/images/bg_mansion.jpg") center / cover fixed no-repeat,
+    url("assets/images/bg_mansion.optimized.jpg") center / cover fixed no-repeat,
     radial-gradient(circle at 20% 10%, rgba(255, 244, 204, 0.72), transparent 24rem),
     radial-gradient(circle at 82% 92%, rgba(207, 167, 160, 0.26), transparent 25rem),
     linear-gradient(145deg, #eadcc5 0%, #f6ecd9 42%, #dfc8a4 100%);
@@ -631,8 +631,8 @@ body.is-correct-cue .butterfly-guide {
   padding: 30px 22px;
   overflow: hidden;
   background:
-    url("assets/images/parchment.png") center / cover no-repeat,
-    url("assets/images/music_sheet.png") center / cover no-repeat,
+    url("assets/images/parchment.jpg") center / cover no-repeat,
+    url("assets/images/music_sheet.jpg") center / cover no-repeat,
     radial-gradient(circle at 0 0, rgba(95, 56, 39, 0.14), transparent 8rem),
     radial-gradient(circle at 100% 100%, rgba(95, 56, 39, 0.12), transparent 9rem),
     linear-gradient(90deg, rgba(111, 60, 52, 0.08), transparent 18%, transparent 82%, rgba(111, 60, 52, 0.07)),
