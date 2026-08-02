@@ -64,7 +64,7 @@ const pages = [
     leftTitle: "第三章 Crescendo ― だんだん強く ―",
     story: "温室の譜面台には、途中までしか書かれていない楽譜。\n\nその余白に、三つ目の謎が浮かびました。\n\n大きな言葉でなくてもかまいません。\n拍手、笑顔、見守るまなざし。\n\nあなたの答えも、二人の未来を照らす小さな光になります。",
     puzzleTitle: "謎解き③",
-    question: "テスト３",
+      question: "画像の中に隠された手がかりを読み解き、導かれる言葉を答えてください。",
     questionImage: "assets/images/question3.png",
     questionImageAlt: "第三章の謎解き画像",
     answer: "３",
@@ -156,7 +156,7 @@ const creditContent = {
     },
     {
       role: "音楽・効果音制作",
-      names: ["Remi", "sumioai"]
+        names: ["Remi", "with sumioai"]
     },
     {
       role: "Special Thanks",
