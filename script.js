@@ -156,7 +156,7 @@ const creditContent = {
     },
     {
       role: "音楽・効果音制作",
-      names: ["Remi", "with ChatGPT"]
+      names: ["Remi", "sumioai"]
     },
     {
       role: "Special Thanks",
@@ -368,6 +368,10 @@ function renderPage() {
   updateAmbientAudio(page);
   bindMediaOverflowUpdates();
   schedulePageOverflowUpdate();
+
+  if (page.type === "extra") {
+    resetExtraPageScroll();
+  }
 }
 
 function schedulePageOverflowUpdate() {
@@ -386,6 +390,16 @@ function updatePageOverflow() {
   document.querySelectorAll(".page").forEach((pageElement) => {
     const hasOverflow = pageElement.scrollHeight > pageElement.clientHeight + 2;
     pageElement.classList.toggle("is-scrollable", hasOverflow);
+  });
+}
+
+function resetExtraPageScroll() {
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+    book.scrollTop = 0;
+    document.querySelectorAll(".extra-spread, .extra-page").forEach((element) => {
+      element.scrollTop = 0;
+    });
   });
 }
 
