@@ -497,11 +497,6 @@ function renderStoryPage(page) {
           ${extraButton}
         </div>
       </article>
-      <article class="page room-visual-page" aria-hidden="true">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        ${renderRoomVisual(themeClass)}
-      </article>
     </div>
   `;
 }
@@ -634,10 +629,6 @@ function renderEndingPage(page) {
         <p class="eyebrow">Completed Melody</p>
         <h2>${escapeHtml(page.title)}</h2>
         ${renderInvitationPreview(true)}
-      </article>
-      <article class="page room-page">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
         <p class="eyebrow">Final Message</p>
         ${renderEndingLetterFrame()}
         <div class="page-actions">
@@ -674,11 +665,6 @@ function renderExtraPage(page) {
           ${previousButton}
           <button class="secondary-button" type="button" data-action="restart">タイトルへ戻る</button>
         </div>
-      </article>
-      <article class="page room-visual-page" aria-hidden="true">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        ${renderRoomVisual(themeClass)}
       </article>
     </div>
   `;
@@ -726,11 +712,6 @@ function renderMiraclePage(page) {
           <button class="primary-button" type="button" data-action="next-page">Extra Contentsへ</button>
           <button class="secondary-button" type="button" data-action="restart">タイトルへ戻る</button>
         </div>
-      </article>
-      <article class="page room-visual-page" aria-hidden="true">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        ${renderRoomVisual(themeClass)}
       </article>
     </div>
   `;

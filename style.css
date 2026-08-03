@@ -625,11 +625,11 @@ body.is-correct-cue .butterfly-guide {
   border-radius: 12px;
 }
 
-.book-spread.single-page-spread {
+.book-spread {
   grid-template-columns: 1fr;
 }
 
-.book-spread.single-page-spread::after {
+.book-spread::after {
   display: none;
 }
 
@@ -2268,11 +2268,11 @@ body[data-page-type="ending"] .ending-text {
   }
 
   .book-spread {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .story-spread {
-    grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .book-spread::after {
