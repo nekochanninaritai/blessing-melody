@@ -1283,7 +1283,7 @@ function bindMiracleForm(page) {
       await refreshMiracleRecords({ forceRender: true });
     } catch {
       successMessage.textContent = "";
-      errorMessage.textContent = "記録の保存に失敗しました。少し時間をおいてもう一度お試しください。\n繰り返し失敗する場合は、ページを再読み込みしてください。";
+      errorMessage.textContent = "記録の保存に失敗しました。少し時間をおいて再度お試しください。\n（繰り返し失敗する場合は、ページを再読み込みしてください。）";
     } finally {
       submitButton.disabled = false;
     }
@@ -1321,7 +1321,7 @@ function bindLotteryEntry(page) {
         entryButton.textContent = "🎁 抽選へ参加する";
 
         if (message) {
-          message.textContent = "抽選受付に失敗しました。少し時間をおいてもう一度お試しください。";
+          message.textContent = "抽選受付に失敗しました。少し時間をおいて再度お試しください。\n（繰り返し失敗する場合は、ページを再読み込みしてください。）";
         }
       }
     });
