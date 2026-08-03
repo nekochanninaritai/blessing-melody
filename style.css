@@ -625,6 +625,14 @@ body.is-correct-cue .butterfly-guide {
   border-radius: 12px;
 }
 
+.book-spread.single-page-spread {
+  grid-template-columns: 1fr;
+}
+
+.book-spread.single-page-spread::after {
+  display: none;
+}
+
 .page {
   position: relative;
   min-height: 305px;

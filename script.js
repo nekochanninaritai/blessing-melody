@@ -541,7 +541,7 @@ function renderPuzzlePage(page) {
   const themeClass = getPageTheme(page);
 
   return `
-    <div class="book-spread question-focus-spread ${themeClass}">
+    <div class="book-spread single-page-spread question-focus-spread ${themeClass}">
       <article class="page question-page room-page">
         ${renderPaperEffects()}
         ${renderRoomDecor(themeClass)}
@@ -558,11 +558,6 @@ function renderPuzzlePage(page) {
         </form>
         ${previousButton}
       </article>
-      <article class="page room-visual-page question-visual-page" aria-hidden="true">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        ${renderRoomVisual(themeClass)}
-      </article>
     </div>
   `;
 }
@@ -572,7 +567,7 @@ function renderPuzzleStoryPage(page) {
   const themeClass = getPageTheme(page);
 
   return `
-    <div class="book-spread puzzle-story-spread ${themeClass}">
+    <div class="book-spread single-page-spread puzzle-story-spread ${themeClass}">
       <article class="page story-page room-page puzzle-story-page">
         ${renderPaperEffects()}
         ${renderRoomDecor(themeClass)}
@@ -584,11 +579,6 @@ function renderPuzzleStoryPage(page) {
           ${previousButton}
           <button class="primary-button" type="button" data-action="next-page">謎へ進む</button>
         </div>
-      </article>
-      <article class="page room-visual-page" aria-hidden="true">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        ${renderRoomVisual(themeClass)}
       </article>
     </div>
   `;
