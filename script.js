@@ -562,7 +562,6 @@ function renderPuzzlePage(page) {
         ${renderPaperEffects()}
         ${renderRoomDecor(themeClass)}
         ${renderRoomVisual(themeClass)}
-        ${renderInvitationPreview()}
       </article>
     </div>
   `;
@@ -580,6 +579,7 @@ function renderPuzzleStoryPage(page) {
         <p class="eyebrow">Story</p>
         <h2>${escapeHtml(page.title || page.leftTitle)}</h2>
         <div class="story-body">${formatStoryText(page.text || page.story)}</div>
+        ${renderInvitationPreview()}
         <div class="page-actions">
           ${previousButton}
           <button class="primary-button" type="button" data-action="next-page">謎へ進む</button>
@@ -589,7 +589,6 @@ function renderPuzzleStoryPage(page) {
         ${renderPaperEffects()}
         ${renderRoomDecor(themeClass)}
         ${renderRoomVisual(themeClass)}
-        ${renderInvitationPreview()}
       </article>
     </div>
   `;
