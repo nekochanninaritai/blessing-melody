@@ -779,7 +779,7 @@ function renderEscapeGameCard() {
     <a class="extra-card" href="${url}" target="_blank" rel="noopener noreferrer">
       <span class="extra-card__ribbon">Another Gift</span>
       <span class="extra-card__thumb">
-        <img src="assets/images/dgm-thumbnail.webp" alt="もうひとつの祝福の館" loading="lazy" onerror="this.closest('.extra-card__thumb').classList.add('is-missing-image'); this.remove();">
+        <img src="assets/images/story-ending.jpg" alt="もうひとつの祝福の館" loading="lazy" onerror="this.closest('.extra-card__thumb').classList.add('is-missing-image'); this.remove();">
       </span>
       <span class="extra-card__body">
         <span class="extra-card__title">もうひとつの祝福の館</span>
@@ -1283,7 +1283,7 @@ function bindMiracleForm(page) {
       await refreshMiracleRecords({ forceRender: true });
     } catch {
       successMessage.textContent = "";
-      errorMessage.textContent = "記録の保存に失敗しました。少し時間をおいてもう一度お試しください。";
+      errorMessage.textContent = "記録の保存に失敗しました。少し時間をおいてもう一度お試しください。\n繰り返し失敗する場合は、ページを再読み込みしてください。";
     } finally {
       submitButton.disabled = false;
     }
