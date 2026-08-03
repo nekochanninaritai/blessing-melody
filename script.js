@@ -346,6 +346,10 @@ function renderPage() {
     book.innerHTML = renderPuzzlePage(page);
   }
 
+  if (page.type === "puzzle-story") {
+    book.innerHTML = renderPuzzleStoryPage(page);
+  }
+
   if (page.type === "restore") {
     book.innerHTML = renderRestorePage(page);
   }
@@ -537,15 +541,7 @@ function renderPuzzlePage(page) {
   const themeClass = getPageTheme(page);
 
   return `
-    <div class="book-spread ${themeClass}">
-      <article class="page room-page">
-        ${renderPaperEffects()}
-        ${renderRoomDecor(themeClass)}
-        <p class="eyebrow">Story</p>
-        <h2>${escapeHtml(page.leftTitle)}</h2>
-        <p class="story-text">${escapeHtml(page.story)}</p>
-        ${renderInvitationPreview()}
-      </article>
+    <div class="book-spread question-focus-spread ${themeClass}">
       <article class="page question-page room-page">
         ${renderPaperEffects()}
         ${renderRoomDecor(themeClass)}
@@ -561,6 +557,39 @@ function renderPuzzlePage(page) {
           <p id="error-message" class="error-message" role="alert" aria-live="polite"></p>
         </form>
         ${previousButton}
+      </article>
+      <article class="page room-visual-page question-visual-page" aria-hidden="true">
+        ${renderPaperEffects()}
+        ${renderRoomDecor(themeClass)}
+        ${renderRoomVisual(themeClass)}
+        ${renderInvitationPreview()}
+      </article>
+    </div>
+  `;
+}
+
+function renderPuzzleStoryPage(page) {
+  const previousButton = renderPreviousButton();
+  const themeClass = getPageTheme(page);
+
+  return `
+    <div class="book-spread puzzle-story-spread ${themeClass}">
+      <article class="page story-page room-page puzzle-story-page">
+        ${renderPaperEffects()}
+        ${renderRoomDecor(themeClass)}
+        <p class="eyebrow">Story</p>
+        <h2>${escapeHtml(page.title || page.leftTitle)}</h2>
+        <div class="story-body">${formatStoryText(page.text || page.story)}</div>
+        <div class="page-actions">
+          ${previousButton}
+          <button class="primary-button" type="button" data-action="next-page">謎へ進む</button>
+        </div>
+      </article>
+      <article class="page room-visual-page" aria-hidden="true">
+        ${renderPaperEffects()}
+        ${renderRoomDecor(themeClass)}
+        ${renderRoomVisual(themeClass)}
+        ${renderInvitationPreview()}
       </article>
     </div>
   `;
@@ -1947,8 +1976,18 @@ function buildRuntimePages(sourcePages) {
       restoredPiece: page.restoredPiece,
       restoredText: page.restoredText
     }, "explanation", 4);
+    const puzzleStoryPage = {
+      type: "puzzle-story",
+      sourceId: page.id,
+      id: page.id,
+      title: page.leftTitle,
+      text: page.story,
+      restoredPiece: page.restoredPiece,
+      restoredText: page.restoredText
+    };
 
     return [
+      puzzleStoryPage,
       page,
       ...restorePages
     ];
