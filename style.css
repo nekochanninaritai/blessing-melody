@@ -1891,7 +1891,7 @@ body.is-credit-open {
   width: min(260px, 78vw);
   height: 156px;
   margin: 0 auto 26px;
-  background: url("assets/images/title_butterfly.jpg?v=20260802-title") center / contain no-repeat;
+  background: url("assets/images/title_butterfly.png?v=20260803-title") center / contain no-repeat;
   filter:
     drop-shadow(0 10px 18px rgba(111, 60, 52, 0.12))
     drop-shadow(0 0 18px rgba(255, 248, 222, 0.28));
