@@ -772,7 +772,7 @@ function renderMiracleRecords() {
 }
 
 function renderEscapeGameCard() {
-  const url = "https://dasshutsu.games/game/-NM2y3ZPZ1nQLpa620TF";
+    const url = "https://nekochanninaritai.github.io/maison-symphonique-escape";
 
   return `
     <a class="extra-card" href="${url}" target="_blank" rel="noopener noreferrer">
@@ -782,8 +782,8 @@ function renderEscapeGameCard() {
       </span>
       <span class="extra-card__body">
         <span class="extra-card__title">もうひとつの祝福の館</span>
-        <span class="extra-card__text">この物語を別の形でも楽しめる、<br>脱出ゲームメーカー版です。<br>スマートフォンから気軽に遊べます。</span>
-        <span class="extra-card__button">脱出ゲームメーカーで遊ぶ</span>
+        <span class="extra-card__text">この物語を別の形でも楽しめる、<br>脱出ゲームです。<br>スマートフォンから気軽に遊べます。</span>
+        <span class="extra-card__button">脱出ゲームで遊ぶ</span>
       </span>
     </a>
   `;
