@@ -56,3 +56,7 @@ window.WEDDING_FIREBASE_CONFIG = {
   }
 }
 ```
+
+## Documents
+
+システムの企画・設計・保守資料は、[docs/README.md](./docs/README.md)を参照してください。
