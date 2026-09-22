@@ -53,6 +53,121 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+.asset-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 24px;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 249, 222, 0.68), transparent 18rem),
+    linear-gradient(rgba(67, 43, 32, 0.18), rgba(67, 43, 32, 0.18)),
+    url("assets/images/bg_mansion.optimized.jpg") center / cover no-repeat,
+    var(--bg);
+  transition: opacity 420ms ease, visibility 420ms ease;
+}
+
+.asset-loader.is-complete {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.asset-loader__card {
+  position: relative;
+  width: min(100%, 360px);
+  padding: 34px 28px 30px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 154, 99, 0.58);
+  border-radius: 16px;
+  color: var(--ink);
+  text-align: center;
+  background:
+    linear-gradient(rgba(255, 250, 238, 0.9), rgba(255, 246, 226, 0.92)),
+    radial-gradient(circle at 50% 8%, rgba(228, 199, 114, 0.24), transparent 8rem),
+    var(--paper);
+  box-shadow: 0 26px 70px rgba(55, 33, 24, 0.3), inset 0 0 0 1px rgba(255, 255, 245, 0.58);
+}
+
+.asset-loader__card::before,
+.asset-loader__card::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.asset-loader__card::before {
+  inset: 12px;
+  border: 1px solid rgba(185, 154, 99, 0.34);
+  border-radius: 12px;
+}
+
+.asset-loader__card::after {
+  top: 18px;
+  right: 22px;
+  width: 56px;
+  height: 42px;
+  opacity: 0.18;
+  background: url("assets/images/butterfly.gif?v=20260629-gif") center / contain no-repeat;
+  animation: loaderButterfly 4.8s ease-in-out infinite;
+}
+
+.asset-loader__eyebrow {
+  position: relative;
+  margin: 0 0 12px;
+  color: var(--accent-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.asset-loader__title {
+  position: relative;
+  margin: 0 0 18px;
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(2rem, 10vw, 3.2rem);
+  letter-spacing: 0.08em;
+}
+
+.asset-loader__text,
+.asset-loader__percent {
+  position: relative;
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.asset-loader__percent {
+  margin-top: 8px;
+  color: var(--accent-dark);
+  font-size: 1.45rem;
+  letter-spacing: 0.06em;
+}
+
+.asset-loader__bar {
+  position: relative;
+  height: 8px;
+  margin-top: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 154, 99, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 250, 238, 0.74);
+}
+
+.asset-loader__bar span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold-bright));
+  box-shadow: 0 0 14px rgba(224, 190, 112, 0.32);
+  transition: width 180ms ease;
+}
+
 .paper-effects {
   position: absolute;
   inset: 8px;
@@ -2405,6 +2520,17 @@ body[data-page-type="ending"] .ending-text {
       0 1px 0 rgba(255, 250, 240, 0.95),
       0 12px 30px rgba(111, 60, 52, 0.18),
       0 0 20px rgba(228, 199, 114, 0.22);
+  }
+}
+
+@keyframes loaderButterfly {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translate3d(-8px, 5px, 0) rotate(5deg);
   }
 }
 

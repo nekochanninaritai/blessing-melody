@@ -182,6 +182,10 @@ const restoreCount = document.getElementById("restore-count");
 const musicboxGauge = document.getElementById("musicbox-gauge");
 const audioStartButton = document.getElementById("audio-start");
 const audioToggleButton = document.getElementById("audio-toggle");
+const assetLoader = document.getElementById("asset-loader");
+const assetLoaderText = document.getElementById("asset-loader-text");
+const assetLoaderPercent = document.getElementById("asset-loader-percent");
+const assetLoaderBar = document.getElementById("asset-loader-bar");
 
 const audioPaths = {
   intro: "assets/audio/%E3%83%97%E3%83%AD%E3%83%AD%E3%83%BC%E3%82%B0.mp3",
@@ -198,6 +202,15 @@ const audioPaths = {
 const imagePaths = {
   butterfly: "assets/images/butterfly.gif"
 };
+
+const styleImagePreloadPaths = [
+  "assets/images/bg_mansion.optimized.jpg",
+  "assets/images/ornament_frame.png",
+  "assets/images/parchment.jpg",
+  "assets/images/music_sheet.jpg",
+  "assets/images/butterfly.gif?v=20260629-gif",
+  "assets/images/title_butterfly.png?v=20260803-title"
+];
 
 const audioState = {
   enabled: false,
@@ -227,6 +240,121 @@ let creditScrollPosition = 0;
 let creditHistoryPushed = false;
 
 detectOptionalImages();
+
+function initializeApp() {
+  setupAudioControls();
+
+  preloadAudioAssets();
+
+  preloadImageAssets((progress) => {
+    updateAssetLoader(progress);
+  }).finally(() => {
+    updateAssetLoader(100);
+    renderPage();
+    setAudioEnabled(Boolean(state.audioEnabled), { persist: false, resumeAudio: false });
+    hideAssetLoader();
+  });
+}
+
+function collectImagePreloadSources() {
+  const sources = new Set([...styleImagePreloadPaths, ...Object.values(imagePaths)]);
+
+  pages.forEach((page) => {
+    if (page.image) {
+      sources.add(page.image);
+    }
+
+    if (page.questionImage) {
+      sources.add(page.questionImage);
+    }
+
+    if (page.letterImage) {
+      sources.add("assets/images/ending_letter.jpg");
+    }
+
+    if (page.chunkImages) {
+      Object.values(page.chunkImages).forEach((chunk) => {
+        if (chunk?.image) {
+          sources.add(chunk.image);
+        }
+      });
+    }
+  });
+
+  return Array.from(sources);
+}
+
+function preloadImageAssets(onProgress) {
+  const sources = collectImagePreloadSources();
+
+  if (!sources.length) {
+    onProgress(100);
+    return Promise.resolve();
+  }
+
+  let completed = 0;
+
+  onProgress(0);
+
+  return Promise.all(
+    sources.map(
+      (source) =>
+        new Promise((resolve) => {
+          const image = new Image();
+
+          const done = () => {
+            completed += 1;
+            onProgress(Math.round((completed / sources.length) * 100));
+            resolve();
+          };
+
+          image.onload = done;
+          image.onerror = done;
+          image.src = source;
+        })
+    )
+  );
+}
+
+function preloadAudioAssets() {
+  Object.values(audioPaths).forEach((path) => {
+    try {
+      const audio = new Audio();
+      audio.preload = "auto";
+      audio.src = path;
+      audio.load();
+    } catch {
+      // Audio preloading is best-effort; playback still starts from user action.
+    }
+  });
+}
+
+function updateAssetLoader(progress) {
+  const percent = Math.max(0, Math.min(100, Number(progress) || 0));
+
+  if (assetLoaderText) {
+    assetLoaderText.textContent = percent >= 100 ? "読み込み完了" : "読み込み中…";
+  }
+
+  if (assetLoaderPercent) {
+    assetLoaderPercent.textContent = `${percent}%`;
+  }
+
+  if (assetLoaderBar) {
+    assetLoaderBar.style.width = `${percent}%`;
+  }
+}
+
+function hideAssetLoader() {
+  if (!assetLoader) {
+    return;
+  }
+
+  assetLoader.classList.add("is-complete");
+  window.setTimeout(() => {
+    assetLoader.hidden = true;
+  }, 460);
+}
 
 function loadProgress() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -2336,9 +2464,7 @@ function stopAmbientAudio() {
   audioState.endingStarted = false;
 }
 
-setupAudioControls();
-renderPage();
-setAudioEnabled(Boolean(state.audioEnabled), { persist: false, resumeAudio: false });
+initializeApp();
 window.addEventListener("resize", schedulePageOverflowUpdate);
 window.addEventListener("orientationchange", schedulePageOverflowUpdate);
 window.addEventListener("popstate", () => {
